@@ -1,4 +1,5 @@
-tialize Binomial, normal distribution"""
+#!/usr/bin/env python3
+"""Initialize Binomial, normal distribution"""
 
 
 class Binomial:
