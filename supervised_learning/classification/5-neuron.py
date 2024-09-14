@@ -1,5 +1,5 @@
-#!usr/bin/env python3
-""" Neuron Gradient Descent"""
+#!/usr/bin/env python3
+"""Neuron Gradient Descent"""
 
 
 import numpy as np
