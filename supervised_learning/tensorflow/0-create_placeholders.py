@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
-"""Neuron"""
+"""placeholders"""
+
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
+def create_placeholders(nx, classes):
+    """
+    Creates two placeholders, x and y, for the neural network.
+
+    Arguments:
+    nx -- number of feature columns in our data
+    classes -- number of classes in our classifier
+
+    Returns:
+    x -- placeholder for the input data, of shape [None, nx] and dtype "float"
+    y -- placeholder for the one-hot labels, of shape [None, classes] and dtype "float"
+    """
+    x = tf.placeholder(tf.float32, shape=[None, nx], name='x')
+    y = tf.placeholder(tf.float32, shape=[None, classes], name='y')
+    
+    return x, y
 
 
-mport numpy as np
-
-
-class Neuron:
-    """This is a class that defines a single neuron performing
-    binary classification"""
-
-    def __init__(self, nx):
-        """Class constructor
-
-        nx: is the number of input features to the neuron"""
-        if type(nx) is not int:
-            raise TypeError('nx must be an integer')
-        if nx < 1:
-            raise ValueError('nx must be a positive integer')
-        self.W = np.random.normal(size=(1, nx))
-        self.b = 0
-        self.A = 0

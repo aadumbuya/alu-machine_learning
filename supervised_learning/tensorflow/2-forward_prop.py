@@ -1,47 +1,24 @@
 #!/usr/bin/env python3
 """This is a neuron"""
 
+import tensorflow as tf 
 
-import numpy as np
+create_layer = __import__('1-create_layer').create_layer
 
+def forward_prop(x, layer_sizes=[], activations=[]):
+    """
+    Creates the forward propagation graph for the neural network.
 
-class Neuron:
-    """This is a class that defines a single neuron performing
-    binary classification"""
+    Arguments:
+    x -- placeholder for the input data
+    layer_sizes -- list containing the number of nodes in each layer of the network
+    activations -- list containing the activation functions for each layer of the network
 
-    def __init__(self, nx):
-        """Class constructor
-
-        nx: is the number of input features to the neuron"""
-        if type(nx) is not int:
-            raise TypeError('nx must be an integer')
-        if nx < 1:
-            raise ValueError('nx must be a positive integer')
-        self.__W = np.random.normal(size=(1, nx))
-        self.__b = 0
-        self.__A = 0
-
-    @property
-    def W(self):
-        """getter function of attribute W"""
-        return self.__W
-
-    @property
-    def b(self):
-        """getter function of attribute W"""
-        return self.__b
-
-    @property
-    def A(self):
-        """getter function of attribute W"""
-        return self.__A
-
-    def forward_prop(self, X):
-        """Forward propagation of the neuron
-
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-
-        Return: the private attribute A"""
-        x = np.matmul(self.W, X) + self.b
-        self.__A = 1 / (1 + np.e**(-x))
-        return self.A
+    Returns:
+    The prediction of the network in tensor form
+    """
+    layer = x
+    for size, activation in zip(layer_sizes, activations):
+        layer = create_layer(layer, size, activation)
+    return layer
+    

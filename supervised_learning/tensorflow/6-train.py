@@ -1,114 +1,63 @@
 #!/usr/bin/env python3
-"""Train Neuron"""
 
 
 import numpy as np
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
+calculate_accuracy = __import__('3-calculate_accuracy').calculate_accuracy
+calculate_loss = __import__('4-calculate_loss').calculate_loss
+create_placeholders = __import__('0-create_placeholders').create_placeholders
+create_train_op = __import__('5-create_train_op').create_train_op
+forward_prop = __import__('2-forward_prop').forward_prop
+
+def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations, alpha, iterations, save_path="/tmp/model.ckpt"):
+    """
+    Builds, trains, and saves a neural network classifier.
+
+    Arguments:
+    X_train -- numpy.ndarray containing the training input data
+    Y_train -- numpy.ndarray containing the training labels
+X_valid -- numpy.ndarray containing the validation input data
+    Y_valid -- numpy.ndarray containing the validation labels
+    layer_sizes -- list containing number of nodes in each layer of network
+    activations -- list containing type of activation function for each layer of network
+    alpha -- learning rate
+iterations -- number of iterations to train over
+    save_path -- designates where to save the model
+
+    Returns:
+    The path where the model was saved
+    """"`
+    x, y = create_placeholders(X_train.shape[1], Y_train.shape[1])
+    y_pred = forward_prop(x, layer_sizes, activations)
+    loss = calculate_loss(y, y_pred)
+accuracy = calculate_accuracy(y, y_pred)
+    train_op = create_train_op(loss, alpha)
+
+    tf.add_to_collection('x', x)
+    tf.add_to_collection('y', y)
+    tf.add_to_collection('y_pred', y_pred)
+    tf.add_to_collection('loss', loss)
+    tf.add_to_collection('accuracy', accuracy)
+    tf.add_to_collection('train_op', train_op)
+
+    init = tf.global_variables_initializer()
+    saver = tf.train.Saver()
+
+    with tf.Session() as sess:
+sess.run(init)
+        for i in range(iterations + 1):
+            sess.run(train_op, feed_dict={x: X_train, y: Y_train})
+            if i % 100 == 0 or i == iterations:
+train_cost, train_accuracy = sess.run([loss, accuracy], feed_dict={x: X_train, y: Y_train})
+                valid_cost, valid_accuracy = sess.run([loss, accuracy], feed_dict={x: X_valid, y: Y_valid})
+                print(f"After {i} iterations:")
+print(f"\tTraining Cost: {train_cost}")
+                print(f"\tTraining Accuracy: {train_accuracy}")
+                print(f"\tValidation Cost: {valid_cost}")
+print(f"\tValidation Accuracy: {valid_accuracy}")
+        save_path = saver.save(sess, save_path)
+    return save_path
 
 
-class Neuron:
-    """Neuron class that defines a single neuron performing
-    binary classification"""
-
-    def __init__(self, nx):
-        """Class constructor
-
-        nx: is the number of input features to the neuron"""
-        if type(nx) is not int:
-            raise TypeError('nx must be an integer')
-        if nx < 1:
-            raise ValueError('nx must be a positive integer')
-        self.__W = np.random.normal(size=(1, nx))
-        self.__b = 0
-        self.__A = 0
-
-    @property
-    def W(self):
-        """getter function of attribute W"""
-        return self.__W
-
-    @property
-    def b(self):
-        """getter function of attribute W"""
-        return self.__b
-
-    @property
-    def A(self):
-        """getter function of attribute W"""
-        return self.__A
-
-    def forward_prop(self, X):
-        """Forward propagation of the neuron
-
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-
-        Return: the private attribute A"""
-        x = np.matmul(self.W, X) + self.b
-        self.__A = 1 / (1 + np.e**(-x))
-        return self.A
-
-    def cost(self, Y, A):
-        """The cost of the model using logistic
-        regression
-
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        A: is a numpy.ndarray with shape (1, m) containing the activated
-        output of the neuron for each example
-
-        Return: the cost"""
-        # To avoid division error I use 1.0000001 - A
-        m = Y.shape[1]
-        a = 1.0000001 - A
-        x = - 1 / m * np.sum(Y * np.log(A) + (1 - Y) * np.log(a))
-        return x
-
-    def evaluate(self, X, Y):
-        """The neuron predictions
-
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-
-        Return: The neuron prediction and the cost of the network respectively
-        """
-        A = self.forward_prop(X)
-        evaluation = np.where(A >= 0.5, 1, 0)
-        cost = self.cost(Y, self.A)
-        return evaluation, cost
-
-    def gradient_descent(self, X, Y, A, alpha=0.05):
-        """The gradient descent on the neuron
-
-        X:  is a numpy.ndarray with shape (nx, m) that contains the input data
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        A: is a numpy.ndarray with shape (1, m) containing the activated
-        output of the neuron for each example
-        alpha: is the learning rate"""
-        m = 1 / X.shape[1]
-        dz = A - Y
-        dw = np.matmul(dz, X.T) * m
-        db = np.sum(dz) * m
-        self.__W = self.W - (alpha * dw)
-        self.__b = self.b - (alpha * db).T
-
-    def train(self, X, Y, iterations=5000, alpha=0.05):
-        """Function that trains the neuron
-
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        iterations: is the number of iterations to train over
-        alpha: is the learning rate"""
-        if type(iterations) is not int:
-            raise TypeError('iterations must be an integer')
-        if iterations < 0:
-            raise ValueError('iterations must be a positive integer')
-        if type(alpha) is not float:
-            raise TypeError('alpha must be a float')
-        if alpha < 0:
-            raise ValueError('alpha must be positive')
-        for _ in range(iterations):
-            self.forward_prop(X)
-            self.gradient_descent(X, Y, self.A, alpha)
-        return self.evaluate(X, Y)

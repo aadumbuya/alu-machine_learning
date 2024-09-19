@@ -1,63 +1,22 @@
 #!/usr/bin/env python3
-"""This is neuron"""
+"""accuracy"""
 
 
-import numpy as np
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
+def calculate_accuracy(y, y_pred):
+    """
+    Calculates the accuracy of a prediction.
 
-class Neuron:
-    """This is a class that defines a single neuron performing
-    binary classification"""
+    Arguments:
+    y -- placeholder for the labels of the input data
+    y_pred -- tensor containing the network’s predictions
 
-    def __init__(self, nx):
-        """Class constructor
+    Returns:
+    A tensor containing the decimal accuracy of the prediction
+    """
+    correct_predictions = tf.equal(tf.argmax(y, 1), tf.argmax(y_pred, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32))
+    return accuracy
 
-        nx: is the number of input features to the neuron"""
-        if type(nx) is not int:
-            raise TypeError('nx must be an integer')
-        if nx < 1:
-            raise ValueError('nx must be a positive integer')
-        self.__W = np.random.normal(size=(1, nx))
-        self.__b = 0
-        self.__A = 0
-
-    @property
-    def W(self):
-        """getter function of attribute W"""
-        return self.__W
-
-    @property
-    def b(self):
-        """getter function of attribute W"""
-        return self.__b
-
-    @property
-    def A(self):
-        """getter function of attribute W"""
-        return self.__A
-
-    def forward_prop(self, X):
-        """Calculates the forward propagation of the neuron
-
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-
-        Return: the private attribute A"""
-        x = np.matmul(self.W, X) + self.b
-        self.__A = 1 / (1 + np.e**(-x))
-        return self.A
-
-    def cost(self, Y, A):
-        """The cost of the model in logistic
-        regression
-
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        A: is a numpy.ndarray with shape (1, m) containing the activated
-        output of the neuron for each example
-
-        Return: the cost"""
-        # To avoid division error I use 1.0000001 - A
-        m = Y.shape[1]
-        a = 1.0000001 - A
-        x = - 1 / m * np.sum(Y * np.log(A) + (1 - Y) * np.log(a))
-        return x

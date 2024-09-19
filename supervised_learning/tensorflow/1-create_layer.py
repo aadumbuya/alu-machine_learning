@@ -1,37 +1,23 @@
 #!/usr/bin/env python3
-"""This is Neuron"""
+"""layers""" 
 
 
-import numpy as np
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
+def create_layer(prev, n, activation):
+    """
+    Creates a layer for the neural network.
 
-class Neuron:
-    """This is class that defines a single neuron performing
-    binary classification"""
+    Arguments:
+    prev -- tensor output of the previous layer
+    n -- number of nodes in the layer to create
+    activation -- activation function that the layer should use
 
-    def __init__(self, nx):
-        """Class constructor
+    Returns:
+    tensor output of the layer
+    """
+    initializer = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    layer = tf.layers.dense(prev, units=n, activation=activation, kernel_initializer=initializer, name='layer')
+    return layer
 
-        nx: is the number of input features to the neuron"""
-        if type(nx) is not int:
-            raise TypeError('nx must be an integer')
-        if nx < 1:
-            raise ValueError('nx must be a positive integer')
-        self.__W = np.random.normal(size=(1, nx))
-        self.__b = 0
-        self.__A = 0
-
-    @property
-    def W(self):
-        """getter function of attribute W"""
-        return self.__W
-
-    @property
-    def b(self):
-        """getter function of attribute W"""
-        return self.__b
-
-    @property
-    def A(self):
-        """getter function of attribute W"""
-        return self.__A
