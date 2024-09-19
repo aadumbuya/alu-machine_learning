@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
 import numpy as np
 
 def evaluate(X, Y, save_path):

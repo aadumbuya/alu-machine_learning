@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-"""layers""" 
 
 
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
 
 def create_layer(prev, n, activation):
     """
@@ -15,9 +13,10 @@ def create_layer(prev, n, activation):
     activation -- activation function that the layer should use
 
     Returns:
-    tensor output of the layer
+tensor output of the layer
     """
     initializer = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
     layer = tf.layers.dense(prev, units=n, activation=activation, kernel_initializer=initializer, name='layer')
     return layer
+
 
