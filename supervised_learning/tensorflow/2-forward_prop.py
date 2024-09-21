@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Forward Propagation"""
+
 
 
 import tensorflow as tf 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Evaluate the model"""
+
 
 import tensorflow as tf
 import numpy as np

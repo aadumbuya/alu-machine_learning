@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Calculating the loss"""
+
 
 
 import tensorflow  as tf
