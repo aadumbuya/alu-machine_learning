@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 
-"""placeholders"""
+"""Placeholders"""
 
 
 import tensorflow as tf
 
+
 def create_placeholders(nx, classes):
     """
-    Creates two placeholders, x and y, for the neural network.
+    Returns two placeholders, x and y, for the neural network.
 
     Arguments:
-    nx -- number of feature columns in our data
-    classes -- number of classes in our classifier
+    nx -- number of feature columns in the data
+    classes -- number of classes in the classifier
 
     Returns:
-x -- placeholder for the input data, of shape [None, nx] and dtype "float"
-    y -- placeholder for the one-hot labels, of shape [None, classes] and dtype "float"
+    x -- placeholder for the input data (shape: [None, nx])
+    y -- placeholder for the one-hot labels (shape: [None, classes])
     """
-    x = tf.placeholder(tf.float32, shape=[None, nx], name='x')
-    y = tf.placeholder(tf.float32, shape=[None, classes], name='y')
-    
+    x = tf.placeholder('float32', shape=[None, nx], name='x')
+    y = tf.placeholder('float32', shape=[None, classes], name='y')
     return x, y
 
 

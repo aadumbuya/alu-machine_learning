@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
-"""Train Operation"""
+"""Train operation"""
 
-import tensorflow  as tf
+import tensorflow as tf
+
 
 def create_train_op(loss, alpha):
     """
-    Creates the training operation for the network.
-
-    Arguments:
-    loss -- the loss of the network's prediction
-    alpha -- the learning rate
-
-    Returns:
-    An operation that trains the network using gradient descent
+    function that creates the training operation for the network
+    loss is the loss of the networks prediction
+    alpha is the learning rate
+    Returns: an operation that trains the network using gradient descent
     """
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=alpha)
-train_op = optimizer.minimize(loss)
-    return train_op
+    return tf.train.GradientDescentOptimizer(alpha).minimize(loss)
 
 
       
