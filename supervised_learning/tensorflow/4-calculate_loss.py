@@ -14,5 +14,3 @@ def calculate_loss(y, y_pred):
     Return: a tensor containing the loss of the prediction
     """
     return tf.losses.softmax_cross_entropy(y, y_pred)
-
-
