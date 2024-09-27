@@ -15,5 +15,3 @@ def l2_reg_create_layer(prev, n, activation, lambtha):
         kernel_regularizer=reg
     )
     return layer(prev)
-
-
