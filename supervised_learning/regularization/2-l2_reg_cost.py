@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
+""" L2 Regularization Cost"""
 
-import numpy as np
 import tensorflow as tf
 
-def l2_reg_cost(cost, weights, lambtha):
-    l2_cost = cost
-    l2_regularization = 0
-    for weight in weights.values():
-        l2_regularization += tf.nn.l2_loss(weight)
-    l2_cost += lambtha * l2_regularization
-    return l2_cost
+
+def l2_reg_cost(cost):
+    """ calculates the cost of a neural network with L2 regularization:
+        cost: tensor containing the cost of the network without L2
+        regularization
+        Returns: a tensor containing the cost of the network accounting for L2
+        regularization
+    """
+    return cost + tf.losses.get_regularization_losses()
 
