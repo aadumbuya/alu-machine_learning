@@ -11,4 +11,4 @@ def update_variables_Adam(alpha, beta1, beta2, epsilon, var, grad, v, s, t):
     Vd_corrected = Vd / (1 - beta1 ** t)
     Sd_corrected = Sd / (1 - beta2 ** t)
     var -= alpha * Vd_corrected / (Sd_corrected ** 0.5 + epsilon)
-    return var, Vd, SdY
+    return var, Vd, Sd
